@@ -378,9 +378,10 @@ static UIImage *RCTResizeImageIfNeeded(UIImage *image,
   });
 
   return ^{
-    if (cancelLoad) {
-      cancelLoad();
-      cancelLoad = nil;
+    dispatch_block_t innerCancel = [cancelLoad copy];
+    if (innerCancel) {
+      innerCancel();
+      innerCancel = nil;
     }
     OSAtomicOr32Barrier(1, &cancelled);
   };
